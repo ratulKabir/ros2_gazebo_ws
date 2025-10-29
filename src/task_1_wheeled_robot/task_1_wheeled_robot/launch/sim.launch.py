@@ -13,13 +13,14 @@ def generate_launch_description():
     return LaunchDescription([
         ExecuteProcess(
             cmd=['ros2', 'launch', 'ros_gz_sim', 'gz_sim.launch.py',
-                 f'world:={world}'],
+                 f'gz_args:={world}'],
             output='screen'
         ),
         ExecuteProcess(
             cmd=['ros2', 'run', 'ros_gz_sim', 'create',
                  '-file', urdf,
-                 '-name', 'simple_bot'],
+                 '-name', 'simple_bot', 
+                 '-z', '0.11'],
             output='screen'
         ),
         Node(
