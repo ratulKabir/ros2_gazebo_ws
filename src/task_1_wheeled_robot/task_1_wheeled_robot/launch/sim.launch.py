@@ -16,16 +16,9 @@ def generate_launch_description():
                  f'gz_args:={world}'],
             output='screen'
         ),
-        ExecuteProcess(
-            cmd=['ros2', 'run', 'ros_gz_sim', 'create',
-                 '-file', urdf,
-                 '-name', 'simple_bot', 
-                 '-z', '0.11'],
-            output='screen'
-        ),
-        Node(
-            package='task_1_wheeled_robot',
-            executable='motion_node',
-            output='screen'
-        )
+        # Node(
+        #     package='task_1_wheeled_robot',
+        #     executable='motion_node',
+        #     output='screen'
+        # )
     ])
