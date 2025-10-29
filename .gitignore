@@ -1,0 +1,41 @@
+# ROS 2 / colcon
+build/
+install/
+log/
+
+# Python
+*.py[cod]
+__pycache__/
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+pip-wheel-metadata/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+
+# Testing / tooling
+.pytest_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+.cache/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*~ 
+*.swp
+
+# Misc
+.DS_Store
+Thumbs.db
