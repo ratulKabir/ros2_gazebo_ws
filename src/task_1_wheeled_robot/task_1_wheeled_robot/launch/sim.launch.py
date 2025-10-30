@@ -15,11 +15,12 @@ def generate_launch_description():
                  f'gz_args:={world}'],
             output='screen'
         ),
-        # Bridge between ROS 2 and Gazebo
+        # Bridge between ROS 2 and Gazebo (cmd_vel and odometry)
         ExecuteProcess(
             cmd=[
                 'ros2', 'run', 'ros_gz_bridge', 'parameter_bridge',
-                '/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist'
+                '/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist',
+                '/model/vehicle_blue/odometry@nav_msgs/msg/Odometry@ignition.msgs.Odometry'
             ],
             output='screen'
         ),
