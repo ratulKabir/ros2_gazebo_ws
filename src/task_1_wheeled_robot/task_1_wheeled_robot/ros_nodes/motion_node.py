@@ -7,16 +7,23 @@ import math
 import random
 import time
 
-
 class MotionNode(Node):
     def __init__(self):
         super().__init__('motion_node')
 
+        # Get parameter from launch file (default: True)
+        self.declare_parameter('USE_EKF', True)
+        use_ekf = self.get_parameter('USE_EKF').get_parameter_value().bool_value
+
+        # Decide odometry topic
+        self.odom_topic = '/ekf/odom' if use_ekf else '/odom_noisy'
+        self.get_logger().info(f'Using odometry topic: {self.odom_topic}')
+
         # Publisher: velocity commands
         self.cmd_pub = self.create_publisher(Twist, '/cmd_vel', 10)
 
-        # Subscriber: EKF odometry (use filtered pose!)
-        self.create_subscription(Odometry, '/ekf/odom', self.odom_callback, 10)
+        # Subscriber: odometry (noisy or EKF)
+        self.create_subscription(Odometry, self.odom_topic, self.odom_callback, 10)
 
         # Timer for control loop (10 Hz)
         self.timer = self.create_timer(0.1, self.control_loop)
