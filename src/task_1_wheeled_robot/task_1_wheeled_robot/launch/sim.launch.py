@@ -8,7 +8,6 @@ def generate_launch_description():
     pkg_path = get_package_share_directory('task_1_wheeled_robot')
 
     world = os.path.join(pkg_path, 'world', 'world.sdf')
-    urdf = os.path.join(pkg_path, 'urdf', 'diff_drive.urdf')
 
     return LaunchDescription([
         ExecuteProcess(
@@ -16,13 +15,17 @@ def generate_launch_description():
                  f'gz_args:={world}'],
             output='screen'
         ),
+        # Bridge between ROS 2 and Gazebo (cmd_vel and odometry)
         ExecuteProcess(
-            cmd=['ros2', 'run', 'ros_gz_sim', 'create',
-                 '-file', urdf,
-                 '-name', 'simple_bot', 
-                 '-z', '0.11'],
+            cmd=[
+                'ros2', 'run', 'ros_gz_bridge', 'parameter_bridge',
+                '/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist',
+                '/model/vehicle_blue/odometry@nav_msgs/msg/Odometry@ignition.msgs.Odometry'
+            ],
             output='screen'
         ),
+
+        # Motion node (publishes Twist messages)
         Node(
             package='task_1_wheeled_robot',
             executable='motion_node',
