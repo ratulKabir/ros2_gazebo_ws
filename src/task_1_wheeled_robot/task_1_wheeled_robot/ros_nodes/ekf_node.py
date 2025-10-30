@@ -22,7 +22,7 @@ class EKFNode(Node):
         self.P = np.diag([1.0, 1.0, np.deg2rad(10)**2])
 
         self.Q = np.diag([0.02, 0.02, np.deg2rad(2.0)])**2  # process noise
-        self.R = np.diag([0.05, 0.05, np.deg2rad(2.0)])**2  # measurement noise
+        self.R = np.diag([0.5, 0.5, np.deg2rad(5.0)])**2  # measurement noise
 
         self.v = 0.0
         self.w = 0.0

@@ -23,9 +23,9 @@ class LivePlotter(Node):
 
         # Plot setup
         self.fig, self.ax = plt.subplots()
-        self.truth_plot, = self.ax.plot([], [], 'g-', label='Ground Truth')
         self.noisy_plot, = self.ax.plot([], [], 'r--', label='Noisy')
         self.ekf_plot,   = self.ax.plot([], [], 'b-', label='EKF')
+        self.truth_plot, = self.ax.plot([], [], 'g-', label='Ground Truth')
         self.ax.legend()
         self.ax.set_xlabel('X [m]')
         self.ax.set_ylabel('Y [m]')

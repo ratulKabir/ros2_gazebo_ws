@@ -18,8 +18,8 @@ class NoiseInjector(Node):
         self.pub = self.create_publisher(Odometry, '/odom_noisy', 10)
 
         # Tunable noise levels
-        self.pos_std = 0.05                 # [m]
-        self.yaw_std = math.radians(2.0)    # [rad]
+        self.pos_std = 0.5                 # [m]
+        self.yaw_std = math.radians(5.0)    # [rad]
         self.vel_std = 0.02                 # [m/s]
 
     # ------------------------------------------------------
