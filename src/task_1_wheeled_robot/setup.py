@@ -30,6 +30,9 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'random_motion_node = task_1_wheeled_robot.ros_nodes.random_motion_node:main',
+            'noise_injector_node = task_1_wheeled_robot.ros_nodes.noise_injector_node:main', 
+            'ekf_node = task_1_wheeled_robot.ros_nodes.ekf_node:main', 
             'motion_node = task_1_wheeled_robot.ros_nodes.motion_node:main',
         ],
     },

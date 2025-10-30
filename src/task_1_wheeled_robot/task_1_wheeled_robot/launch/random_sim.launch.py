@@ -28,7 +28,7 @@ def generate_launch_description():
         # Motion node (publishes Twist messages)
         Node(
             package='task_1_wheeled_robot',
-            executable='motion_node',
+            executable='random_motion_node',
             output='screen'
         )
     ])
