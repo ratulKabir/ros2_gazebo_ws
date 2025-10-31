@@ -2,6 +2,7 @@
 import rclpy
 from rclpy.node import Node
 from nav_msgs.msg import Odometry
+from geometry_msgs.msg import Point
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import threading
@@ -14,18 +15,21 @@ class LivePlotter(Node):
         self.truth = {'x': [], 'y': []}
         self.noisy = {'x': [], 'y': []}
         self.ekf   = {'x': [], 'y': []}
+        self.target = {'x': [], 'y': []}  # ✅ Added target data
         self.ego_x, self.ego_y = 0.0, 0.0
 
         # Subscribers
         self.create_subscription(Odometry, '/model/vehicle_blue/odometry', self.truth_cb, 10)
         self.create_subscription(Odometry, '/odom_noisy', self.noisy_cb, 10)
         self.create_subscription(Odometry, '/ekf/odom', self.ekf_cb, 10)
+        self.create_subscription(Point, '/target_point', self.target_cb, 10)  # ✅ Target subscriber
 
         # Plot setup
         self.fig, self.ax = plt.subplots()
         self.noisy_plot, = self.ax.plot([], [], 'ro', label='Noisy', markersize=3)
         self.ekf_plot,   = self.ax.plot([], [], 'b-', label='EKF')
         self.truth_plot, = self.ax.plot([], [], 'g-', label='Ground Truth')
+        self.target_plot, = self.ax.plot([], [], 'kx', label='Target', markersize=8)  # ✅ target marker
         self.ax.legend()
         self.ax.set_xlabel('X [m]')
         self.ax.set_ylabel('Y [m]')
@@ -51,11 +55,17 @@ class LivePlotter(Node):
         self.ekf['x'].append(msg.pose.pose.position.x)
         self.ekf['y'].append(msg.pose.pose.position.y)
 
+    # ✅ Target callback
+    def target_cb(self, msg):
+        self.target['x'].append(msg.x)
+        self.target['y'].append(msg.y)
+
     # ---------------- Plot Update ----------------
     def update_plot(self, frame):
         self.truth_plot.set_data(self.truth['x'], self.truth['y'])
         self.noisy_plot.set_data(self.noisy['x'], self.noisy['y'])
         self.ekf_plot.set_data(self.ekf['x'], self.ekf['y'])
+        self.target_plot.set_data(self.target['x'], self.target['y'])  # ✅ plot target(s)
 
         # Keep the plot centered on the ego position
         if len(self.truth['x']) > 0:
@@ -64,7 +74,7 @@ class LivePlotter(Node):
             self.ax.set_xlim(cx - r, cx + r)
             self.ax.set_ylim(cy - r, cy + r)
 
-        return self.truth_plot, self.noisy_plot, self.ekf_plot
+        return self.truth_plot, self.noisy_plot, self.ekf_plot, self.target_plot
 
 
 def main(args=None):

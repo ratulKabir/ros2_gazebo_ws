@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist, Point
 from nav_msgs.msg import Odometry
 import math
 import random
@@ -22,6 +22,9 @@ class MotionNode(Node):
         # Publisher: velocity commands
         self.cmd_pub = self.create_publisher(Twist, '/cmd_vel', 10)
 
+        # ✅ Publisher: target point
+        self.target_pub = self.create_publisher(Point, '/target_point', 10)
+
         # Subscriber: odometry (noisy or EKF)
         self.create_subscription(Odometry, self.odom_topic, self.odom_callback, 10)
 
@@ -35,6 +38,9 @@ class MotionNode(Node):
         self.target = self.random_target()
         self.get_logger().info(f'🎯 New target: {self.target}')
 
+        # Publish initial target
+        self.publish_target()
+
     # ----------------------------------------------
     def odom_callback(self, msg: Odometry):
         self.current_x = msg.pose.pose.position.x
@@ -47,6 +53,14 @@ class MotionNode(Node):
 
     def random_target(self):
         return (random.uniform(-5, 5), random.uniform(-5, 5))
+
+    # ✅ Publish target helper
+    def publish_target(self):
+        target_msg = Point()
+        target_msg.x = self.target[0]
+        target_msg.y = self.target[1]
+        target_msg.z = 0.0
+        self.target_pub.publish(target_msg)
 
     # ----------------------------------------------
     def control_loop(self):
@@ -62,6 +76,7 @@ class MotionNode(Node):
             time.sleep(1.0)
             self.target = self.random_target()
             self.get_logger().info(f'🎯 New target: {self.target}')
+            self.publish_target()  # ✅ publish updated target
             return
 
         # Heading to target
